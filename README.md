@@ -1,7 +1,8 @@
-# Harmony: A Premium Blog
+# Taatee
 
 
-Addis Ababa Institute of Technology - Web Programming: Group Project
+ Tate is an event booking system for AAiT Tech Club - a club under formation. Students will use Taatee to register for the monthly tech talks and other networking events that is planned to be organized by the club.
+ - Web Programming: Group Project
 
 ## Group Memebers
 - Abdulmunim Jundurahman   UGR/8625/14
