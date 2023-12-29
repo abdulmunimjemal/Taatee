@@ -1,7 +1,7 @@
 # Taatee
 
 
- Tate is an event booking system for AAiT Tech Club - a club under formation. Students will use Taatee to register for the monthly tech talks and other networking events that is planned to be organized by the club.
+ Taatee is an event booking system for AAiT Tech Club - a club under formation. Students will use Taatee to register for the monthly tech talks and other networking events that is planned to be organized by the club.
  - Web Programming: Group Project
 
 ## Group Memebers
