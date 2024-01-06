@@ -55,7 +55,7 @@ export class AuthService {
 
         const isPasswordValid = await bcrypt.compare(signinDto.password, user.password);
         if (!isPasswordValid) {
-            throw new HttpException('User not found', HttpStatus.UNAUTHORIZED);
+            throw new HttpException('Invalid Password', HttpStatus.UNAUTHORIZED);
         }
         delete user.password
         delete user.isAdmin
