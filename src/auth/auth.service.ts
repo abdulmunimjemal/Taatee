@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, FindOneOptions } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
 
 const salt = 10;
 
@@ -14,6 +15,7 @@ export class AuthService {
     constructor(
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
+        private readonly jwtService: JwtService,
     ) {}
 
     async signup(signupDto: SignupDto) {
@@ -36,7 +38,9 @@ export class AuthService {
         }
         const result = this.userRepository.save(user);   
         delete (await result).password
-        return result  
+        delete (await result).isAdmin
+        const accessToken = this.jwtService.sign({ email: signupDto.email });
+        return {access_token: accessToken, user: await result};
     }
 
     async signin(signinDto: SigninDto) {
@@ -54,6 +58,8 @@ export class AuthService {
             throw new HttpException('User not found', HttpStatus.UNAUTHORIZED);
         }
         delete user.password
-        return user;
+        delete user.isAdmin
+        const accessToken = this.jwtService.sign({ email: signinDto.email });
+        return {access_token: accessToken};
     }
 }
