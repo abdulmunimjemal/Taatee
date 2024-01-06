@@ -5,6 +5,8 @@ import { EventModule } from './event/event.module';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/entities/user.entity';
+import { JwtModule } from '@nestjs/jwt';
+import { jwtConfig } from './auth/jwt/jwt.config';
 
 @Module({
   imports: [AuthModule, UserModule, EventModule, BookingModule,
@@ -15,6 +17,7 @@ import { User } from './user/entities/user.entity';
       autoLoadEntities: true,
       synchronize: true,
     }),
+    JwtModule.register(jwtConfig),
   ],
 })
 export class AppModule {}
