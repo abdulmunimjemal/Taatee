@@ -1,4 +1,47 @@
-import { Controller } from '@nestjs/common';
+// user/user.controller.ts
+import { Controller, Get, Param, UseGuards, Request, Patch, Body, Delete } from '@nestjs/common';
+import { JwtGuard } from '../auth/guard/jwt.guard'; // Import the JwtAuthGuard
+import { AdminGuard } from '../auth/guard/';
+import { UpdateUserDto } from './dto/';
+import { UserService } from './user.service'; // Import the UserService
 
 @Controller('user')
-export class UserController {}
+export class UserController {
+  constructor(private readonly userService: UserService) {}
+
+  @Get()
+  @UseGuards(JwtGuard)
+  getProfile(@Request() req) {
+    const user = req.user;
+    const id = user.id;
+    let result = this.userService.findOne(id);
+    return result;
+  }
+
+  @Get(':id')
+  @UseGuards(AdminGuard)
+  getUserById(@Param('id') id: number) {
+    return this.userService.findOne(id);
+  }
+
+  @Patch("")
+  @UseGuards(JwtGuard)
+  updateProfile(@Request() req, @Body() updateUserDto: UpdateUserDto) {
+    const user = req.user;
+    const id = user.id;
+    return this.userService.update(id, updateUserDto);
+  }
+
+  @Patch(':id')
+  @UseGuards(AdminGuard)
+   updateUser(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
+        return this.userService.update(id, updateUserDto);
+    }
+
+  @Delete(':id')
+  @UseGuards(AdminGuard)
+  deleteUser(@Param('id') id: number) {
+        return this.userService.remove(id);
+    }
+  // Add more routes based on your application requirements
+}
