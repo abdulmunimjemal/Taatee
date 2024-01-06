@@ -4,13 +4,15 @@ import { BookingModule } from './booking/booking.module';
 import { EventModule } from './event/event.module';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from './user/entities/user.entity';
 
 @Module({
   imports: [AuthModule, UserModule, EventModule, BookingModule,
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: 'db.sqlite',
-      entities: [],
+      entities: [User],
+      autoLoadEntities: true,
       synchronize: true,
     }),
   ],
