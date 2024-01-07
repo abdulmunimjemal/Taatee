@@ -60,4 +60,25 @@ describe('-- Event Testings --', () => {
         .mockResolvedValue(serviceMockResult);
 });
 });
+
+// ---------------------update----------------
+describe('* Update Event', () => {
+    it('should update an event if successful', async () => {
+      const mockEventId = 1;
+      const updatedEventDto: UpdateEventDto = {
+        // For example, { eventName: 'Updated Event', eventDate: new Date(), ... }
+      };
+
+      const expectedResult = new Event(); // Modify as needed based on your implementation
+
+      jest.spyOn(eventService, 'updateEvent').mockResolvedValue(expectedResult);
+
+      const result = await eventController.updateEvent(
+        mockEventId,
+        updatedEventDto,
+      );
+      expect(result).toBe(expectedResult);
+    });
+  });
+
 })
