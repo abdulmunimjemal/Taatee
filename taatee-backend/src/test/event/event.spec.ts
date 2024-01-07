@@ -26,5 +26,8 @@ describe('-- Event Testings --', () => {
         eventController = module.get<EventController>(EventController);
         eventDto = module.get<EventDto>(EventDto);
       });
+      afterEach(() => {
+        jest.resetAllMocks();
+      });
 }
 
