@@ -9,7 +9,7 @@ import { Role } from './role/role.enum';
 import * as dotenv from 'dotenv';
 
 dotenv.config()
-const salt = process.env.SALT || 10;
+const salt = parseInt(process.env.SALT, 10);
 
 // we will use SQLite as our database
 @Injectable()

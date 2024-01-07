@@ -7,6 +7,7 @@ import { Role } from 'src/auth/role/role.enum';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
+const salt = parseInt(process.env.SALT, 10);
 
 @Injectable()
 export class SeederService implements OnModuleInit {
@@ -51,7 +52,7 @@ export class SeederService implements OnModuleInit {
 
       let password = adminUser.password;
 
-      adminUser.password = await bcrypt.hashSync(adminUser.password, 10);
+      adminUser.password = await bcrypt.hashSync(adminUser.password, salt);
 
       // Save updated admin user to the database
       await this.connection.getRepository(User).save(adminUser);

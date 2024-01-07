@@ -18,6 +18,6 @@ export class User {
     @Column()
     lastName: string;
 
-    @Column({ type: 'enum', enum: Role, default: Role.User})
-    role: Role;
+    @Column({ default: Role.User})
+    role: string;
 }

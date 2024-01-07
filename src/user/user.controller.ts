@@ -11,7 +11,7 @@ export class UserController {
 
   @Get()
   @UseGuards(JwtGuard)
-  getProfile(@Request() req) {
+  getSelf(@Request() req) {
     const user = req.user;
     const id = user.id;
     let result = this.userService.findOne(id);
@@ -43,5 +43,14 @@ export class UserController {
   deleteUser(@Param('id') id: number) {
         return this.userService.remove(id);
     }
+
+  @Delete('')
+  @UseGuards(JwtGuard)
+  deleteSelf(@Request() req) {
+    const user = req.user;
+    const id = user.id;
+    let result = this.userService.remove(id);
+    return result;
+  }
   // Add more routes based on your application requirements
 }
