@@ -5,7 +5,7 @@ import { JwtGuard } from '../auth/guard/';
 import { Roles } from '../auth/decorator/';
 import { Role } from '../auth/role/';
 import { RoleGuard } from '../auth/guard';
-import { EventDto } from './dto';
+import { EventDto, UpdateEventDto } from './dto';
 
 @Controller('event')
 export class EventController {
@@ -24,15 +24,15 @@ export class EventController {
   @Post()
   @UseGuards(JwtGuard, RoleGuard)
   @Roles(Role.Admin)
-  createEvent(@Body() eventDto: EventDto): void {
-    this.eventService.createEvent(eventDto);
+  async createEvent(@Body() eventDto: EventDto) {
+    return this.eventService.createEvent(eventDto);
   }
 
   @Patch(':id')
   @UseGuards(JwtGuard, RoleGuard)
   @Roles(Role.Admin)
-  updateEvent(@Param('id') id: number, @Body() updatedEvent: Event): void {
-    this.eventService.updateEvent(id, updatedEvent);
+  updateEvent(@Param('id') id: number, @Body() updatedEvent: UpdateEventDto) {
+    return this.eventService.updateEvent(id, updatedEvent);
   }
 
   @Delete(':id')

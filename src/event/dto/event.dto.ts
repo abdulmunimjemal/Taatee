@@ -1,5 +1,28 @@
 // event.dto.ts
-import { OmitType } from '@nestjs/mapped-types';
-import { Event } from '../entities';
+import { IsNotEmpty, IsString, IsDateString, IsOptional, IsBoolean, IsNumber } from 'class-validator';
 
-export class EventDto extends OmitType(Event, ['id'] as const) {}
+export class EventDto {
+  @IsNotEmpty()
+  @IsString()
+  eventName: string;
+
+  @IsNotEmpty()
+  @IsDateString()
+  eventDate: Date;
+
+  @IsNotEmpty()
+  @IsString()
+  description: string;
+
+  @IsNotEmpty()
+  @IsString()
+  location: string;
+
+  @IsOptional()
+  @IsBoolean()
+  isCanceled?: boolean;
+
+  @IsOptional()
+  @IsNumber()
+  maxBooking?: number;
+}
