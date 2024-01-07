@@ -1,9 +1,11 @@
 // user/user.controller.ts
 import { Controller, Get, Param, UseGuards, Request, Patch, Body, Delete } from '@nestjs/common';
 import { JwtGuard } from '../auth/guard/jwt.guard'; // Import the JwtAuthGuard
-import { AdminGuard } from '../auth/guard/';
+import { RoleGuard } from '../auth/guard/';
 import { UpdateUserDto } from './dto/';
 import { UserService } from './user.service'; // Import the UserService
+import { Role } from 'src/auth/role';
+import { Roles } from '../auth/decorator';
 
 @Controller('user')
 export class UserController {
@@ -18,8 +20,10 @@ export class UserController {
     return result;
   }
 
+
   @Get(':id')
-  @UseGuards(AdminGuard)
+  @UseGuards(JwtGuard, RoleGuard)
+  @Roles(Role.Admin)
   getUserById(@Param('id') id: number) {
     return this.userService.findOne(id);
   }
@@ -33,13 +37,15 @@ export class UserController {
   }
 
   @Patch(':id')
-  @UseGuards(AdminGuard)
+  @UseGuards(JwtGuard, RoleGuard)
+  @Roles(Role.Admin)
    updateUser(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
         return this.userService.updateUser(id, updateUserDto);
     }
 
   @Delete(':id')
-  @UseGuards(AdminGuard)
+  @UseGuards(JwtGuard, RoleGuard)
+  @Roles(Role.Admin)
   deleteUser(@Param('id') id: number) {
         return this.userService.remove(id);
     }
