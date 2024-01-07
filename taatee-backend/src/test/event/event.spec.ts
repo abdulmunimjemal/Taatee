@@ -29,5 +29,19 @@ describe('-- Event Testings --', () => {
       afterEach(() => {
         jest.resetAllMocks();
       });
+
+      // ----------------------Get----------------------------
+  describe('* Get One By Id', () => {
+    it('should return an entity of event if successful', async () => {
+      const expectedResult = new Event();
+      const mockNumberToSatisfyParameters = 0;
+      jest
+        .spyOn(eventService, 'getEventById')
+        .mockResolvedValue(expectedResult);
+      expect(
+        await eventController.getEventById(mockNumberToSatisfyParameters),
+      ).toBe(expectedResult);
+    });
+  });
 }
 
