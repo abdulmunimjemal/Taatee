@@ -43,5 +43,20 @@ describe('-- Event Testings --', () => {
       ).toBe(expectedResult);
     });
   });
+
+  // ------------------Create----------------------
+  describe('* Create event ', () => {
+    const dto = new EventDto();
+    it('should return an object of event entity when created', async () => {
+      const expectedResult = new Event();
+      jest.spyOn(eventService, 'create').mockResolvedValue(expectedResult);
+      expect(await eventController.create(dto)).toBe(expectedResult);
+    });
+    it('should return conflict if event already exists ', async (done) => {
+      const serviceMockResult = new Event();
+      // Pretend that a event does already exist
+      jest
+        .spyOn(eventService, 'getEventById')
+        .mockResolvedValue(serviceMockResult);
 }
 
