@@ -29,13 +29,13 @@ export class UserController {
   updateProfile(@Request() req, @Body() updateUserDto: UpdateUserDto) {
     const user = req.user;
     const id = user.id;
-    return this.userService.update(id, updateUserDto);
+    return this.userService.updateSelf(id, updateUserDto);
   }
 
   @Patch(':id')
   @UseGuards(AdminGuard)
    updateUser(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
-        return this.userService.update(id, updateUserDto);
+        return this.userService.updateUser(id, updateUserDto);
     }
 
   @Delete(':id')

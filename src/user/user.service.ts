@@ -1,8 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, FindOneOptions } from 'typeorm';
 import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
+import { Role } from 'src/auth/role/role.enum';
+import { UpdateUserDto } from './dto';
 
 @Injectable()
 export class UserService {
@@ -25,7 +27,8 @@ export class UserService {
             throw new NotFoundException(`User with ID ${id} not found`);
         }
         delete user.password
-        delete user.isAdmin
+        if (user.role != Role.Admin)
+            delete user.role
         return user;
     }
 
@@ -36,19 +39,32 @@ export class UserService {
     async update(id: number, updateUserDto: Partial<User>): Promise<User> {
         // Logic to update a user
         const existingUser = await this.findOne(id);
-
+    
         if (!existingUser) {
             throw new NotFoundException(`User with ID ${id} not found`);
         }
 
+    
         // Update user fields
         Object.assign(existingUser, updateUserDto);
-
+    
         await this.userRepository.save(existingUser);
-        
+    
         // Return the updated user without the password
         const { password, ...updatedUser } = existingUser;
-        return {...updatedUser, password: "*******"};
+        return { ...updatedUser, password: "*******" };
+    }
+    
+    async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+        return this.update(id, updateUserDto);
+    }
+    
+    async updateSelf(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+        // Check if the update request contains a role change
+        if ('role' in updateUserDto) {
+            throw new ForbiddenException(`You are not authorized to change your own role`);
+        }
+        return this.update(id, updateUserDto);
     }
 
     async remove(id: number): Promise<void> {
