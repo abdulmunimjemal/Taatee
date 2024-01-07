@@ -6,8 +6,10 @@ import { User } from '../user/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { Role } from './role/role.enum';
+import * as dotenv from 'dotenv';
 
-const salt = 10;
+dotenv.config()
+const salt = process.env.SALT || 10;
 
 // we will use SQLite as our database
 @Injectable()

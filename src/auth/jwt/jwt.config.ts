@@ -1,8 +1,11 @@
 import { JwtModuleOptions } from '@nestjs/jwt';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 export const jwtConfig: JwtModuleOptions = {
-    secret: 'pass123',
+    secret: process.env.JWT_SECRET || 'pass123',
     signOptions: {
-        expiresIn: '1h',
+        expiresIn: process.env.JWT_EXPIRES_IN || '1h',
     },
 };
