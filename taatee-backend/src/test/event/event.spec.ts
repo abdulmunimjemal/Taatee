@@ -15,4 +15,16 @@ describe('-- Event Testings --', () => {
     let module: TestingModule;
     let eventController: EventController;
     let eventDto: EventDto;
+
+
+    beforeAll(async () => {
+        module = await Test.createTestingModule({
+          controllers: [EventController],
+          providers: [EventService, BookingService /*BookingModule*/, EventDto],
+        }).compile();
+        eventService = module.get<EventService>(EventService);
+        eventController = module.get<EventController>(EventController);
+        eventDto = module.get<EventDto>(EventDto);
+      });
 }
+
