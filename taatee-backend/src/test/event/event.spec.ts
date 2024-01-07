@@ -58,5 +58,6 @@ describe('-- Event Testings --', () => {
       jest
         .spyOn(eventService, 'getEventById')
         .mockResolvedValue(serviceMockResult);
-}
-
+});
+});
+})
