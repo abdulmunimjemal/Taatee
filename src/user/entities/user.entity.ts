@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { Role } from '../../auth/role/role.enum';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Role } from '../../auth/role/';
+import { Booking } from '../../booking/entities/';
 
 @Entity()
 export class User {
@@ -17,6 +18,9 @@ export class User {
 
     @Column()
     lastName: string;
+
+    @OneToMany(() => Booking, booking => booking.user)
+    bookings: Booking[];
 
     @Column({ default: Role.User})
     role: string;
