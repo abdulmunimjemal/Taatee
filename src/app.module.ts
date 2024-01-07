@@ -7,6 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConfig } from './auth/jwt/jwt.config';
+import { SeederService } from './seeder/seeder.service';
 
 @Module({
   imports: [AuthModule, UserModule, EventModule, BookingModule,
@@ -19,5 +20,6 @@ import { jwtConfig } from './auth/jwt/jwt.config';
     }),
     JwtModule.register(jwtConfig),
   ],
+ providers: [SeederService],
 })
 export class AppModule {}
