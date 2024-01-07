@@ -9,3 +9,10 @@ import { UpdateEventDto } from '../event/dto';
 
 jest.mock('../event/event.service');
 jest.mock('../event/dto');
+
+describe('-- Event Testings --', () => {
+    let eventService: EventService;
+    let module: TestingModule;
+    let eventController: EventController;
+    let eventDto: EventDto;
+}
