@@ -6,3 +6,6 @@ import { EventDto } from '../event/dto';
 import { BookingService } from '../booking/booking.service';
 import { Repository } from 'typeorm';
 import { UpdateEventDto } from '../event/dto';
+
+jest.mock('../event/event.service');
+jest.mock('../event/dto');
