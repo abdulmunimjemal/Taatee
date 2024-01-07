@@ -5,6 +5,7 @@ import { Repository, FindOneOptions } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { Role } from './role/role.enum';
 
 const salt = 10;
 
@@ -28,7 +29,7 @@ export class AuthService {
             throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
         }
 
-        signupDto.isAdmin = false;
+        signupDto.role = Role.User
         signupDto.password = await bcrypt.hashSync(signupDto.password, salt);
 
 
@@ -38,7 +39,8 @@ export class AuthService {
         }
         const result = this.userRepository.save(user);   
         delete (await result).password
-        delete (await result).isAdmin
+        if (!((await result).role == Role.Admin))
+            delete (await result).role
         const accessToken = this.jwtService.sign({ email: signupDto.email });
         return {access_token: accessToken, user: await result};
     }
@@ -58,8 +60,9 @@ export class AuthService {
             throw new HttpException('Invalid Password', HttpStatus.UNAUTHORIZED);
         }
         delete user.password
-        delete user.isAdmin
+        if (!(user.role == Role.Admin))
+            delete user.role
         const accessToken = this.jwtService.sign({ email: signinDto.email });
-        return {access_token: accessToken};
+        return {access_token: accessToken, user: user};
     }
 }

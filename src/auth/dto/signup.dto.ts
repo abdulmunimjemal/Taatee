@@ -1,4 +1,5 @@
 import { IsBoolean, IsEmail, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { Role } from "../role/role.enum";
 
 export class SignupDto {
     @IsNotEmpty()
@@ -18,5 +19,5 @@ export class SignupDto {
 
     @IsBoolean()
     @IsOptional()
-    isAdmin: boolean;
+    role: Role;
 }
