@@ -14,7 +14,7 @@ import { SeederService } from './seeder/seeder.service';
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: 'db.sqlite',
-      entities: [User],
+      entities: [__dirname + '/**/entities/*.entity.ts'], // pattern
       autoLoadEntities: true,
       synchronize: true,
     }),
