@@ -31,7 +31,7 @@ export class RoleGuard implements CanActivate {
     if (isAllowed) {
       return true;
     } else {
-      throw new ForbiddenException('Unauthorized: Only Admins can access this');
+      throw new ForbiddenException('Unauthorized Access!');
     }
   }
 }
