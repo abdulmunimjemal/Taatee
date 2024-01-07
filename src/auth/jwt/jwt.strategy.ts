@@ -8,7 +8,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindOneOptions, Repository } from 'typeorm';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class JwtStrategy extends PassportStrategy(
+  Strategy,
+  'jwt',
+  ) {
   constructor(
     // Inject the dependencies that you need to validate the JWT token and perform authorization
     @InjectRepository(User)
