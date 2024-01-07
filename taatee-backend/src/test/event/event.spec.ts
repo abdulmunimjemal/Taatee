@@ -81,4 +81,17 @@ describe('* Update Event', () => {
     });
   });
 
+
+  // -------------------Delete-----------------
+  describe('* Delete Event', () => {
+    it('should delete an event if successful', async () => {
+      const mockEventId = 1;
+      const expectedResult = undefined;
+
+      jest.spyOn(eventService, 'deleteEvent').mockResolvedValue(expectedResult);
+
+      const result = await eventController.deleteEvent(mockEventId);
+      expect(result).toBe(expectedResult);
+    });
+  });
 })
