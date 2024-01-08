@@ -3,14 +3,14 @@ import { BookingService } from './booking.service';
 import { BookingController } from './booking.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Booking } from './entities';
-import { EventService } from '../event/event.service';
-import { UserService } from '../user/user.service';
+import { EventModule } from '../event/event.module';
+import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Booking]),
-    EventService,
-    UserService
+    EventModule,
+    UserModule,
   ],
   providers: [BookingService],
   controllers: [BookingController]

@@ -16,7 +16,7 @@ export class BookingController {
     @UseGuards(JwtGuard, RoleGuard)
     @Roles(Role.User)
     async createBooking(
-        @Param('eventId') eventId: string,
+        @Param('eventId') eventId: number,
         @Body() bookingDto: BookingDto
     ) {
         return this.bookingService.createBooking(eventId, bookingDto);

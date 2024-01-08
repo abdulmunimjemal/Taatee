@@ -2,9 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { InjectRepository } from '@nestjs/typeorm';
 import { Booking } from './entities';
 import { Repository } from 'typeorm';
-import { Event } from '../event/entities';
 import { EventService } from '../event/event.service';
-import { User } from '../user/entities';
 import { BookingDto } from './dto';
 import { UserService } from '../user/user.service';
 
@@ -13,10 +11,6 @@ export class BookingService {
     constructor(
         @InjectRepository(Booking)
         private readonly bookingRepository: Repository<Booking>,
-        @InjectRepository(Event)
-        private readonly eventRepository: Repository<Event>,
-        @InjectRepository(User)
-        private readonly userRepository: Repository<User>,
         private readonly eventService: EventService,
         private readonly userService: UserService,
     ) {}
