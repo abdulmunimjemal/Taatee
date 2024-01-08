@@ -71,4 +71,39 @@ describe('-- Booking Controller Tests --', () => {
               id: 1, // Assuming the user id
             },
           };
+
+
+
+          // ---------------- Delete Booking ---------------------
+  describe('* Delete Booking', () => {
+    it('should delete booking if user is admin or owner', async () => {
+      const expectedResult = {}; // Mock the expected result as needed
+      jest
+        .spyOn(bookingService, 'deleteBooking')
+        .mockResolvedValue(expectedResult);
+
+      const mockRequest = {
+        user: {
+          role: Role.Admin,
+        },
+      };
+
+      expect(await bookingController.deleteBooking(1, mockRequest)).toBe(
+        expectedResult,
+      );
+    });
+
+    it('should throw ForbiddenException if user is not admin or owner', async (done) => {
+      // Mock the service method to simulate a failure
+      jest
+        .spyOn(bookingService, 'deleteBooking')
+        .mockResolvedValue({ user: { id: 2 } });
+
+      const mockRequest = {
+        user: {
+          role: Role.User,
+          id: 1, // Assuming the user id
+        },
+      };
+
 });
