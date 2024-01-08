@@ -2,45 +2,36 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { InjectRepository } from '@nestjs/typeorm';
 import { Booking } from './entities';
 import { Repository } from 'typeorm';
-import { EventService } from '../event/event.service';
-import { BookingDto } from './dto';
-import { UserService } from '../user/user.service';
+import { User } from '../user/entities';
+import { Event } from '../event/entities';
+import { Role } from 'src/auth/role';
 
 @Injectable()
 export class BookingService {
     constructor(
         @InjectRepository(Booking)
         private readonly bookingRepository: Repository<Booking>,
-        private readonly eventService: EventService,
-        private readonly userService: UserService,
     ) {}
 
-    async createBooking(eventId: number, bookingDto: BookingDto): Promise<Booking> {
-        const event = await this.eventService.getEventById(eventId);
+    async createBooking(event: Event, user: User): Promise<Booking> {
 
         if (!event) {
-            throw new NotFoundException(`Event with ID #${eventId} not found`);
+            throw new NotFoundException(`Event with ID #${event.id} not found`);
         }
-
         if (event.isCanceled) {
             throw new BadRequestException("Event is canceled. Bookings are not allowed!");
         }
-
         if (event.maxBooking !== null && event.maxBooking <= event.bookings.length) {
             throw new BadRequestException("Event is fully booked!");
         } 
-
-        const user = await this.userService.findOne(bookingDto.userId);
-
         if (!user) {
-            throw new NotFoundException(`User with ID #${bookingDto.userId} not found`);
+            throw new NotFoundException(`User not found`);
         }
-
         const existingBooking = await this.bookingRepository.findOne({
             where: { event: event, user: user }
         })
 
-        if (!existingBooking) {
+        if (existingBooking) {
             throw new BadRequestException("Booking already exists")
         }
 
@@ -51,5 +42,69 @@ export class BookingService {
         });
 
         return this.bookingRepository.save(newBooking);
+    }
+
+    async getBookingById(id: number): Promise<Booking> {
+        const booking = await this.bookingRepository.findOne(
+            { where: { id: id }, relations: ["event", "user"] },
+            );
+
+        if (!booking) {
+            throw new NotFoundException(`Booking with ID #${id} not found`);
+        }
+        delete booking.user.password
+        delete booking.user.role
+        delete booking.event.maxBooking
+        return booking;
+    }
+
+    async getAllBookings(): Promise<Booking[]> {
+        return this.bookingRepository.find();
+      }
+    
+    async getAllBookingsForUser(user: User): Promise<Booking[]> {
+    
+        if (!user) {
+          throw new NotFoundException(`User not found.`);
+        }
+        
+        return this.bookingRepository.find({ 
+            where: {
+                user: user,
+            },
+            relations: ['event']
+        });
+      }
+    
+    async getAllBookingsForEvent(event: Event): Promise<Booking[]> {
+        if (!event) {
+          throw new NotFoundException(`Event not found.`);
+        }
+    
+        const result = this.bookingRepository.find(
+            {
+                where:
+                { event: event },
+            relations: ["user"] 
+        });
+
+        (await result).forEach(x => {delete x.user.password; delete x.user.role;})
+    return result;
+    }
+
+    async deleteBooking(bookingId: number, user: User): Promise<Booking> {
+        const booking = await this.bookingRepository.findOne({
+            where: { id: bookingId },
+            relations: ["event", "user"]
+        });
+
+        if (!booking) {
+            throw new NotFoundException(`Booking not found`);
+        }
+
+        if (booking.user.id !== user.id || user.role !== Role.Admin) {
+            throw new BadRequestException("You are not allowed to cancel this booking");
+        }
+        return this.bookingRepository.remove(booking);
     }
 }

@@ -6,10 +6,14 @@ import { UpdateUserDto } from './dto/';
 import { UserService } from './user.service'; // Import the UserService
 import { Role } from 'src/auth/role';
 import { Roles } from '../auth/decorator';
+import { BookingService } from '../booking/booking.service';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly bookingService: BookingService
+    ) {}
 
   @Get()
   @UseGuards(JwtGuard)
@@ -19,7 +23,15 @@ export class UserController {
     let result = this.userService.findOne(id);
     return result;
   }
-
+  
+  @Get("bookings")
+  @UseGuards(JwtGuard)
+  async getUserBookings(
+    @Request() request
+  ) {
+    const user = await request.user
+    return this.bookingService.getAllBookingsForUser(user);
+  }
 
   @Get(':id')
   @UseGuards(JwtGuard, RoleGuard)
@@ -28,6 +40,15 @@ export class UserController {
     return this.userService.findOne(id);
   }
 
+  @Get(':id/bookings')
+  @UseGuards(JwtGuard, RoleGuard)
+  @Roles(Role.Admin)
+  async getBookings(@Param('id') userId: number) {
+    const user = await this.userService.findOne(userId)
+    return this.bookingService.getAllBookingsForUser(user)
+  }
+
+  @Get(':id/events')
   @Patch("")
   @UseGuards(JwtGuard)
   updateProfile(@Request() req, @Body() updateUserDto: UpdateUserDto) {

@@ -1,15 +1,19 @@
-import { Controller, Get, Param, Post, Body, Put, Delete, UseGuards, Patch } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Delete, UseGuards, Patch, Req } from '@nestjs/common';
 import { EventService } from './event.service';
-import { Event } from './entities';
 import { JwtGuard } from '../auth/guard/';
 import { Roles } from '../auth/decorator/';
 import { Role } from '../auth/role/';
 import { RoleGuard } from '../auth/guard';
 import { EventDto, UpdateEventDto } from './dto';
+import { BookingService } from '../booking/booking.service';
 
 @Controller('event')
 export class EventController {
-  constructor(private readonly eventService: EventService) {}
+  constructor(
+    private readonly eventService: EventService,
+    private readonly bookingService: BookingService,
+
+    ) {}
 
   @Get()
   getAllEvents() {
@@ -19,6 +23,23 @@ export class EventController {
   @Get(':id')
   async getEventById(@Param('id') id: number){
     return this.eventService.getEventById(id);
+  }
+
+  @Post(':id/book')
+  @UseGuards(JwtGuard, RoleGuard)
+  @Roles(Role.User)
+  async bookEvent(@Param('id') eventId: number, @Req() request) {
+    const user = request.user
+    const event = await this.eventService.getEventById(eventId)
+    return this.bookingService.createBooking(event, user)
+  }
+
+  @Get(':id/bookings')
+  @UseGuards(JwtGuard, RoleGuard)
+  @Roles(Role.Admin)
+  async getBookings(@Param('id') eventId: number) {
+    const event = await this.eventService.getEventById(eventId)
+    return this.bookingService.getAllBookingsForEvent(event)
   }
 
   @Post()
