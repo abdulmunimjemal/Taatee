@@ -2,15 +2,16 @@ import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/commo
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, FindOneOptions } from 'typeorm';
 import { User } from './entities/user.entity';
-import * as bcrypt from 'bcrypt';
 import { Role } from 'src/auth/role/role.enum';
 import { UpdateUserDto } from './dto';
+import { BookingService } from '../booking/booking.service';
 
 @Injectable()
 export class UserService {
     constructor(
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
+        private readonly bookingService: BookingService,
     ) {}
     
     async findOneByEmail(email: string): Promise<User | undefined> {
@@ -74,6 +75,8 @@ export class UserService {
         if (!user) {
             throw new NotFoundException(`User with ID ${id} not found`);
         }
+        // Remove bookings associated with the user too
+        await this.bookingService.deleteAllForUser(user);
 
         await this.userRepository.remove(user);
     }

@@ -1,14 +1,16 @@
 import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOneOptions, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Event } from './entities';
 import { EventDto, UpdateEventDto } from './dto';
+import { BookingService } from 'src/booking/booking.service';
 
 @Injectable()
 export class EventService {
   constructor(
     @InjectRepository(Event)
     private readonly eventRepository: Repository<Event>,
+    private readonly bookingService: BookingService
   ) {}
 
   getAllEvents(): Promise<Event[]> {
@@ -53,11 +55,14 @@ export class EventService {
     return existingEvent;
   }
 
-  deleteEvent(id: number): Promise<void> {
-    const event = this.eventRepository.delete(id);
+  async deleteEvent(id: number): Promise<void> {
+    const event = await this.getEventById(id);
     if (!event) {
-      throw new NotFoundException(`Deletion Failed.`);
+      throw new NotFoundException(`Deletion Failed. Event Not Found.`);
     }
-    return undefined;
+    // delete all bookings assocaited with it
+    await this.bookingService.deleteAllForEvent(event);
+
+    await this.eventRepository.remove(event);
   }
 }
