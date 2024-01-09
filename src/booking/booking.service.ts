@@ -107,4 +107,18 @@ export class BookingService {
         }
         return this.bookingRepository.remove(booking);
     }
+
+    async deleteAllForUser(user: User): Promise<void> {
+        const bookings = await this.getAllBookingsForUser(user);
+        for (const booking of bookings) {
+            await this.bookingRepository.remove(booking);
+        }
+    }
+
+    async deleteAllForEvent(event: Event): Promise<void> {
+        const bookings = await this.getAllBookingsForEvent(event);
+        for (const booking of bookings) {
+            await this.bookingRepository.remove(booking);
+        }
+    }
 }
