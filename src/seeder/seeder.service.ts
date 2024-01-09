@@ -1,10 +1,11 @@
-// src/seeder/seeder.service.ts
+// seeder.service.ts
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Connection } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { User } from '../user/entities/user.entity';
-import { Role } from 'src/auth/role/role.enum';
+import { Event } from '../event/entities/event.entity';
 import * as dotenv from 'dotenv';
+import { userData, eventData } from './seeder.data-source';
 
 dotenv.config();
 const salt = parseInt(process.env.SALT, 10);
@@ -14,53 +15,47 @@ export class SeederService implements OnModuleInit {
   constructor(private readonly connection: Connection) {}
 
   async onModuleInit() {
-    await this.seedAdmin();
+    console.log('Seeding data...')
+    await this.seedData(userData, User);
+    await this.seedData(eventData, Event);
   }
 
-  private async seedAdmin() {
-    const adminEmail = process.env.ADMIN_EMAIL || 'admin@test.com';
+  private async seedData(data: any[], entityClass: any) {
+    const repository = this.connection.getRepository(entityClass);
+    if (!repository) {
+      console.error(`Repository ${entityClass.name} not found!`);
+      return;
+    }
 
-    // Find the admin user by email
-    const adminUser = await this.connection.getRepository(User).findOne({ where: { email: adminEmail } });
+    if (entityClass === User)
+        console.log(`[CREATING] ${data.length} ${entityClass.name} entities...`);
+    else
+        console.log(`[CREATED] ${data.length} ${entityClass.name} entities...`);
 
-    if (!adminUser) {
-      // Create admin user
-      const newAdminUser = new User();
-      newAdminUser.email = adminEmail;
-      newAdminUser.firstName = process.env.ADMIN_FIRST_NAME || 'Abdulmunim';
-      newAdminUser.lastName = process.env.ADMIN_LAST_NAME || 'Jundurahman';
-      newAdminUser.password = process.env.ADMIN_PASSWORD || 'admin'; // You should hash the password
-      newAdminUser.role = Role.Admin;
+    for (const item of data) {
+      const existingEntity = await repository.findOne({ where: { email: item.email } });
 
-      let password = newAdminUser.password;
+      if (!existingEntity) {
+        // Create entity
+        const newEntity = new entityClass();
+        Object.assign(newEntity, item);
+        if (entityClass === User)
+          newEntity.password = await bcrypt.hash(newEntity.password, salt);
+        await repository.save(newEntity);
 
-      newAdminUser.password = await bcrypt.hashSync(newAdminUser.password, 10);
+        if (entityClass === User)
+            // one line description
+            console.log(`[CREATED] USER [${newEntity.role}] [${newEntity.email} | ${item.password}]`);
+      } else {
+        // Update existing entity
+        Object.assign(existingEntity, item);
+        if (entityClass === User)
+            existingEntity.password = await bcrypt.hash(existingEntity.password, salt);
+        await repository.save(existingEntity);
 
-      // Save admin user to the database
-      await this.connection.getRepository(User).save(newAdminUser);
-
-      console.log('Admin user created successfully.');
-      console.log('Email:' + newAdminUser.email);
-      console.log('Password:' + password);
-      console.log('Please change the password immediately.');
-
-    } else {
-      // Update existing admin user
-      adminUser.firstName = process.env.ADMIN_FIRST_NAME || 'Abdulmunim';
-      adminUser.lastName = process.env.ADMIN_LAST_NAME || 'Jundurahman';
-      adminUser.password = process.env.ADMIN_PASSWORD || 'admin'; // You should hash the password
-
-      let password = adminUser.password;
-
-      adminUser.password = await bcrypt.hashSync(adminUser.password, salt);
-
-      // Save updated admin user to the database
-      await this.connection.getRepository(User).save(adminUser);
-
-      console.log('Admin user updated successfully.');
-      console.log('Email:' + adminUser.email);
-      console.log('Password:' + password);
-      console.log('Please change the password immediately.');
+        if (entityClass === User) // Skip logging for events
+            console.log(`[CREATED] [${existingEntity.role}] User [${existingEntity.email} | ${item.password}]`);
+      }
     }
   }
 }
