@@ -79,5 +79,4 @@ export class UserController {
     let result = this.userService.remove(id);
     return result;
   }
-  // Add more routes based on your application requirements
 }

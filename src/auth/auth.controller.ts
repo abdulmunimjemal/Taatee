@@ -15,4 +15,9 @@ export class AuthController {
     async signin(@Body() signinDto: SigninDto) {
         return await this.authService.signin(signinDto);
     }
+
+    @Post("validate")
+    async validate(@Body() token: string) {
+        return await this.authService.validate(token);
+    }
 }
