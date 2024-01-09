@@ -17,12 +17,14 @@ export class EventService {
     return this.eventRepository.find();
   }
 
-  async getEventById(id: number): Promise<Event> {
-    const event =  await this.eventRepository.findOne({
-    where: {
-        id: id,
-    }
-    }); 
+  async getEventById(id: number, loadRelations: boolean = false): Promise<Event> {
+    let query = {
+      where: {
+          id: id,
+      }
+      }
+    query['relations'] = ["bookings"]
+    const event =  await this.eventRepository.findOne(query); 
     if (!event) {
       throw new NotFoundException(`Event With id ${id} is not found.`);
     }

@@ -16,7 +16,7 @@ export const userData = [
     firstName: 'Meti',
     lastName: 'Lamessa',
     password: 'pass1234', // hasing takes place in the seeder service
-    role: Role.Admin,
+    role: Role.User,
   },
   {
     email: 'munim@gmail.com',

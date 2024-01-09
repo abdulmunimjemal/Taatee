@@ -24,7 +24,7 @@ export class UserController {
     return result;
   }
   
-  @Get("bookings")
+  @Get("booking")
   @UseGuards(JwtGuard)
   async getUserBookings(
     @Request() request
@@ -40,7 +40,7 @@ export class UserController {
     return this.userService.findOne(id);
   }
 
-  @Get(':id/bookings')
+  @Get(':id/booking')
   @UseGuards(JwtGuard, RoleGuard)
   @Roles(Role.Admin)
   async getBookings(@Param('id') userId: number) {
@@ -48,7 +48,6 @@ export class UserController {
     return this.bookingService.getAllBookingsForUser(user)
   }
 
-  @Get(':id/events')
   @Patch("")
   @UseGuards(JwtGuard)
   updateProfile(@Request() req, @Body() updateUserDto: UpdateUserDto) {

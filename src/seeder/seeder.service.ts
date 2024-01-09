@@ -29,11 +29,17 @@ export class SeederService implements OnModuleInit {
 
     if (entityClass === User)
         console.log(`[CREATING] ${data.length} ${entityClass.name} entities...`);
-    else
-        console.log(`[CREATED] ${data.length} ${entityClass.name} entities...`);
-
+        console.log('STATUS    [ROLE] TYPE [ EMAIL | PASSWORD]')
     for (const item of data) {
-      const existingEntity = await repository.findOne({ where: { email: item.email } });
+      
+      let existingEntity;
+      if (entityClass == User) {
+         existingEntity = await repository.findOne({ where: { email: item.email } });
+      }
+      else {
+         let entityy = await repository.find()
+         if (entityy.length > 0) continue;
+        }
 
       if (!existingEntity) {
         // Create entity
@@ -44,7 +50,6 @@ export class SeederService implements OnModuleInit {
         await repository.save(newEntity);
 
         if (entityClass === User)
-            // one line description
             console.log(`[CREATED] USER [${newEntity.role}] [${newEntity.email} | ${item.password}]`);
       } else {
         // Update existing entity

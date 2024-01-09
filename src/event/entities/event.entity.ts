@@ -3,6 +3,7 @@ import { Booking } from '../../booking/entities/'; // Assuming you create a Book
 
 @Entity()
 export class Event {
+
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -27,10 +28,8 @@ export class Event {
   @OneToMany(() => Booking, booking => booking.event)
   bookings: Booking[];
 
-
   @BeforeInsert()
   initializeBookings() {
     this.bookings = []; // Initialize the bookings array when a new user is inserted
   }
-  
 }

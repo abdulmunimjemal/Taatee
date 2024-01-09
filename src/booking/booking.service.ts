@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Booking } from './entities';
 import { Repository } from 'typeorm';
@@ -92,7 +92,7 @@ export class BookingService {
     return result;
     }
 
-    async deleteBooking(bookingId: number, user: User): Promise<Booking> {
+    async deleteBooking(bookingId: number, user: User): Promise<any> {
         const booking = await this.bookingRepository.findOne({
             where: { id: bookingId },
             relations: ["event", "user"]
@@ -102,10 +102,13 @@ export class BookingService {
             throw new NotFoundException(`Booking not found`);
         }
 
-        if (booking.user.id !== user.id || user.role !== Role.Admin) {
-            throw new BadRequestException("You are not allowed to cancel this booking");
+        if (!(booking.user.id === user.id || user.role === Role.Admin)) {
+            throw new ForbiddenException("You are not allowed to cancel this booking");
         }
-        return this.bookingRepository.remove(booking);
+        const result = this.bookingRepository.remove(booking);
+        if (!result)
+            throw new BadRequestException("Failed To delete")
+        return {message: "Booking canceled successfully!"}
     }
 
     async deleteAllForUser(user: User): Promise<void> {

@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Param, Get, Req, Delete } from '@nestjs/common';
+import { Controller, UseGuards, Param, Get, Req, Delete, ForbiddenException } from '@nestjs/common';
 import { BookingService } from './booking.service';
 import { JwtGuard, RoleGuard } from '../auth/guard';
 import { Role } from 'src/auth/role';
@@ -19,13 +19,15 @@ export class BookingController {
     }
 
     @Get(":id")
-    @UseGuards(JwtGuard, RoleGuard)
-    @Roles(Role.User)
-    @Roles(Role.Admin)
+    @UseGuards(JwtGuard)
     async getBookingById(
-        @Param('id') id: number
+        @Param('id') id: number,
+        @Req() request,
     ) {
-        return this.bookingService.getBookingById(id);
+        const booking = await this.bookingService.getBookingById(id);
+        const user = request.user
+        if (!(user.role === Role.Admin || booking.user.id == user.id)) throw new ForbiddenException("You are not allowed to access this record!");
+        return booking;
     } 
 
     @Delete(':id')

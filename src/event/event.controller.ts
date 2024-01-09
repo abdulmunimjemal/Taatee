@@ -34,7 +34,7 @@ export class EventController {
     return this.bookingService.createBooking(event, user)
   }
 
-  @Get(':id/bookings')
+  @Get(':id/booking')
   @UseGuards(JwtGuard, RoleGuard)
   @Roles(Role.Admin)
   async getBookings(@Param('id') eventId: number) {
