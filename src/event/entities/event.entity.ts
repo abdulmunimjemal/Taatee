@@ -9,7 +9,7 @@ export class Event {
   @Column()
   eventName: string;
 
-  @Column({ type: 'datetime' })
+  @Column({ type: 'timestamp' })
   eventDate: Date;
 
   @Column()

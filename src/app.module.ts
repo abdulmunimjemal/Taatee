@@ -11,8 +11,12 @@ import { SeederService } from './seeder/seeder.service';
 @Module({
   imports: [AuthModule, UserModule, EventModule, BookingModule,
     TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: 'db.sqlite',
+      type: 'postgres',
+      host: 'localhost',
+      port: 5434,
+      username: 'postgres', // update me
+      password: 'pass123',
+      database: 'tatedb',
       entities: [__dirname + '/**/entities/*.entity.ts'], // pattern
       autoLoadEntities: true,
       synchronize: true,
