@@ -65,6 +65,15 @@ export class AuthService {
         if (!(user.role == Role.Admin))
             delete user.role
         const accessToken = this.jwtService.sign({ email: signinDto.email });
-        return {access_token: accessToken, user: user};
+        return {access_token: accessToken, user: user}; 
+    }
+
+    async validate(token: string) {
+        // Logic to validate the user's token
+        const user = this.jwtService.verify(token);
+        if (!user) {
+            throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
+        }
+        return user;
     }
 }
