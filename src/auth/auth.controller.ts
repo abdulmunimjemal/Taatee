@@ -17,7 +17,12 @@ export class AuthController {
     }
 
     @Post("validate")
-    async validate(@Body() token: string) {
-        return await this.authService.validate(token);
+    async validate(@Body("token") token: string) {
+        try {
+            const result = await this.authService.validate(token);
+            return {valid: true, user: result}
+        } catch (error) {
+            return {valid: false}
+        }
     }
 }
