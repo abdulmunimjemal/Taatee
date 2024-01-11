@@ -36,9 +36,18 @@ There are three steps to run this project.
     
 ### Step 4 - Run the backend tests
     `
-    yarn test booking.spec
-    yarn test event.spec
-    yarn test user.spec  ( these test each of the event crud, booking crud and users crud respectively)
+    (First don't forget to install jest)
+    yarn add --dev jest
+
+    (If not installed add this: )
+    yarn add --dev jest @nestjs/testing
+
+    (Then start checking by this)
+    yarn jest bookings.spec
+    yarn jest events.spec
+    yarn test users.spec  ( these are the unit test)
+
+    yarn jest integrations.spec (this is for the integration testing)
     `
 
 ## Web Programming: Group Project

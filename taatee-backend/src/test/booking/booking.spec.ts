@@ -1,11 +1,11 @@
 // Don't forget to review this code and edit
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { BookingController } from '../booking/booking.controller';
-import { BookingService } from '../booking/booking.service';
-import { JwtGuard, RoleGuard } from '../auth/guard';
-import { Role } from '../auth/role';
-import { Roles } from '../auth/decorator';
+import { BookingController } from 'src/booking/booking.controller';
+import { BookingService } from 'src/booking/booking.service';
+import { JwtGuard, RoleGuard } from '../../auth/guard';
+import { Role } from '../../auth/role';
+import { Roles } from '../../auth/decorator';
 import { ForbiddenException } from '@nestjs/common';
 
 jest.mock('../booking/booking.service');
