@@ -1,6 +1,6 @@
 import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 import { Event } from './entities';
 import { EventDto, UpdateEventDto } from './dto';
 import { BookingService } from 'src/booking/booking.service';
@@ -18,18 +18,24 @@ export class EventService {
   }
 
   async getEventById(id: number, loadRelations: boolean = false): Promise<Event> {
-    let query = {
-      where: {
-          id: id,
-      }
-      }
-    query['relations'] = ["bookings"]
-    const event =  await this.eventRepository.findOne(query); 
+    let query: FindOneOptions<Event> = {
+        where: {
+            id: id,
+        },
+    };
+
+    if (loadRelations) {
+        query.relations = ["bookings"];
+    }
+
+    const event = await this.eventRepository.findOne(query);
+
     if (!event) {
-      throw new NotFoundException(`Event With id ${id} is not found.`);
+        throw new NotFoundException(`Event With id ${id} is not found.`);
     }
     return event;
-  }
+}
+
 
   createEvent(event: EventDto): Promise<Event> {
     const result = this.eventRepository.save(event);

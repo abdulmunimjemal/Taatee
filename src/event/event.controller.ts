@@ -30,7 +30,7 @@ export class EventController {
   @Roles(Role.User)
   async bookEvent(@Param('id') eventId: number, @Req() request) {
     const user = request.user
-    const event = await this.eventService.getEventById(eventId)
+    const event = await this.eventService.getEventById(eventId, true)
     return this.bookingService.createBooking(event, user)
   }
 
