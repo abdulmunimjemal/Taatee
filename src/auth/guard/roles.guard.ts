@@ -31,7 +31,7 @@ export class RoleGuard implements CanActivate {
     if (isAllowed) {
       return true;
     } else {
-      throw new ForbiddenException('Unauthorized Access!');
+      throw new ForbiddenException('You are not allowed to access this resource!');
     }
   }
 }
