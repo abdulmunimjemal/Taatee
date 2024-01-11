@@ -15,6 +15,13 @@ export class UserController {
     private readonly bookingService: BookingService
     ) {}
 
+    @Get('all')
+    @UseGuards(JwtGuard, RoleGuard)
+    @Roles(Role.Admin)
+    getAll() {
+      return this.userService.getAllUsers();
+    }
+    
   @Get()
   @UseGuards(JwtGuard)
   getSelf(@Request() req) {
@@ -78,4 +85,5 @@ export class UserController {
     let result = this.userService.remove(id);
     return result;
   }
+
 }

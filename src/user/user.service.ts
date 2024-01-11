@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, FindOneOptions } from 'typeorm';
 import { User } from './entities/user.entity';
@@ -21,6 +21,9 @@ export class UserService {
     }
 
     async findOne(id: number): Promise<User | undefined> {
+        if (isNaN(id)) {
+            throw new BadRequestException(`Invalid ID: ${id}`);
+        }
         const user = await this.userRepository.findOne({
             where: { id: id },
           } as FindOneOptions<User>);
@@ -37,6 +40,26 @@ export class UserService {
         return this.userRepository.find();
     }
 
+    async getAllUsers(): Promise<User[] | any> {
+        const users = await this.userRepository.find({
+            relations: ['bookings']
+        });
+    
+        const modifiedUsers = users.map(user => {
+            // Create a new object with the desired modifications
+            return {
+                ...user,
+                numberOfbookings: user.bookings.length,
+                bookings: undefined,
+                password: undefined,
+                id: undefined,
+            };
+        });
+    
+        return modifiedUsers;
+    }
+    
+
     async update(id: number, updateUserDto: Partial<User>): Promise<User> {
         // Logic to update a user
         const existingUser = await this.findOne(id);
@@ -45,7 +68,10 @@ export class UserService {
             throw new NotFoundException(`User with ID ${id} not found`);
         }
 
-    
+        if ('email' in updateUserDto && updateUserDto.email != existingUser.email) {
+            throw new ForbiddenException(`You are not authorized to change your email.`);
+        }
+
         // Update user fields
         Object.assign(existingUser, updateUserDto);
     
@@ -65,6 +91,7 @@ export class UserService {
         if ('role' in updateUserDto) {
             throw new ForbiddenException(`You are not authorized to change your own role`);
         }
+       
         return this.update(id, updateUserDto);
     }
 
