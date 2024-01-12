@@ -6,40 +6,40 @@ Taatee is an event booking system for AAiT Tech Club - a club under formation. S
 - Containerization: Docker, to make sure the web app works as expected both on our development environemnt, and instructor's working environment, we decided to use Docker for containerization.
 
 ## How to Run this Project?
-There are three steps to run this project
-
+There are three steps to run this project.
+#### Requirements
+- Node Installed Machine (https://nodejs.org/en)
+- Docker  (https://www.docker.com/)
+- yarn (`npm i -g yarn`)
 
 ### Step 1 - Clone this Repository
     `
     git clone https://github.com/abdulmunimjemal/Taatee.git
     `
   Make sure yarn is installed
-       `
-    npm i -g yarn
-    `
+
 
 ### Step 2 - Run the backend
     `
     cd taatee-backend
-    yarn install
+    yarn install  (install dependencies)
     (make sure your docker engine is running)
-    yarn db:restart
-    yarn start
+    yarn db:restart  ( this creates a docker instance, if you are on Linux, please make sure to separately install docker compose)
+    yarn start  ( this starts the nest app )
     `
 
 ### Step 3 - Run the frontend
-      `
     cd taatee-frontend
     yarn install
     (make sure your docker engine is running)
     yarn load
-    `
-
+    
 
 ## Web Programming: Group Project
 
 ## Group Memebers
 - Abdulmunim Jundurahman UGR/8625/14
-- Meti Lamessa UGR/8856/14
+- Meti Lamessa UGR/5877/14
 - Salman Ali UGR/7808/14
 - Sifan Fita UGR/8856/14
+
