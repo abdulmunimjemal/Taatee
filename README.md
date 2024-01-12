@@ -34,6 +34,12 @@ There are three steps to run this project.
     (make sure your docker engine is running)
     yarn load
     
+### Step 4 - Run the backend tests
+    `
+    yarn test booking.spec
+    yarn test event.spec
+    yarn test user.spec  ( these test each of the event crud, booking crud and users crud respectively)
+    `
 
 ## Web Programming: Group Project
 
