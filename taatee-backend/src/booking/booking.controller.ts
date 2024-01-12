@@ -1,8 +1,8 @@
 import { Controller, UseGuards, Param, Get, Req, Delete, ForbiddenException } from '@nestjs/common';
 import { BookingService } from './booking.service';
 import { JwtGuard, RoleGuard } from '../auth/guard';
-import { Role } from 'src/auth/role';
-import { Roles } from 'src/auth/decorator';
+import { Role } from '../auth/role';
+import { Roles } from '../auth/decorator';
 import { Booking } from './entities';
 
 @Controller('booking')

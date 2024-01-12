@@ -1,5 +1,5 @@
 // data-source.ts
-import { Role } from 'src/auth/role/role.enum';
+import { Role } from '../auth/role/role.enum';
 
 
 export const userData = [

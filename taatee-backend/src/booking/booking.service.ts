@@ -4,7 +4,7 @@ import { Booking } from './entities';
 import { Repository } from 'typeorm';
 import { User } from '../user/entities';
 import { Event } from '../event/entities';
-import { Role } from 'src/auth/role';
+import { Role } from '../auth/role';
 
 @Injectable()
 export class BookingService {

@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindOneOptions, Repository } from 'typeorm';
 import { Event } from './entities';
 import { EventDto, UpdateEventDto } from './dto';
-import { BookingService } from 'src/booking/booking.service';
+import { BookingService } from '../booking/booking.service';
 
 @Injectable()
 export class EventService {

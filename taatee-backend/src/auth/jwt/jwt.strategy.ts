@@ -3,7 +3,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
 import { jwtConfig } from './jwt.config';
-import { User } from 'src/user/entities/user.entity'; // Adjust the import based on your entity location
+import { User } from '../../user/entities/user.entity'; // Adjust the import based on your entity location
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOneOptions, Repository } from 'typeorm';
 
